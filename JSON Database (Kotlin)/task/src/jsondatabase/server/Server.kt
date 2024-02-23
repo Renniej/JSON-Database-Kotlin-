@@ -7,12 +7,10 @@ import java.net.ServerSocket
 import java.net.Socket
 
 
-fun getRecord() {
 
-}
 
 fun main() {
-
+    println("Server started!")
     val address = "127.0.0.1"
     val port = 23456
     val server = ServerSocket(port, 50, InetAddress.getByName(address))
@@ -21,11 +19,17 @@ fun main() {
     val input = DataInputStream(socket.getInputStream())
     val output = DataOutputStream(socket.getOutputStream())
 
-    println("Server started!")
 
-    val num = input.readUTF().split(" ").find { it.toIntOrNull() != null }
-    val response = output.writeUTF("A record # $num was sent!")
 
+    val msg = input.readUTF()
+    val num = msg.split(" ").find { it.toIntOrNull() != null }
+
+    println("Received: $msg")
+
+    val response = "A record # $num was sent!"
+    output.writeUTF(response)
+
+    println("Sent: $response")
 
 
 
