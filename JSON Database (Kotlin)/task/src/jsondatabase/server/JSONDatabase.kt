@@ -3,10 +3,9 @@ package jsondatabase.server
 
 const val EMPTY = ""
 
-class JSONDatabase : Database<String> {
+class JSONDatabase (override val size : Int) : Database<String> {
 
-    private val database = Array(size = 100) {""}
-    override val size = database.size
+    private val database = Array(size = size) {""}
 
     //returns true if the key is within the bounds of the Database else returns false
     private fun isInRange(key :  Int) = (key in 0 until size)

@@ -1,27 +1,34 @@
 package jsondatabase.client
 
-import java.io.DataInputStream
-import java.io.DataOutputStream
-import java.net.InetAddress
-import java.net.Socket
-
-fun main(args : Array<String>) {
+import jsondatabase.requestResponse.Request
 
 
+fun createRequestFromArgs(args : Array<String>): Request {
 
-    println("Client started!")
-    val address = "127.0.0.1"
-    val port = 23456
-    val socket = Socket(InetAddress.getByName(address), port)
-    val input = DataInputStream(socket.getInputStream())
-    val output = DataOutputStream(socket.getOutputStream())
+    val cmd = args[args.indexOf("-t") + 1]
+    val index = args[args.indexOf("-i") + 1]
 
-    val msg = "Give me a record # 12"
-    output.writeUTF(msg)
-    println("Sent: $msg")
+   return when(cmd) {
+        "exit" -> Request.of(cmd)
+        "set" -> {
+            val otherData = args.toString().substringAfter("-m ")
+            Request.of("$cmd $index $otherData")
+        }
+        else -> Request.of("$cmd $index")
+    }
+}
+fun main(args : Array<String>) { //args example : -t set -i 148 -m Here is some text to store on the server
 
-    val response = input.readUTF()
-    println("Received: $response")
 
+    println(args)
+
+
+
+    val request = createRequestFromArgs(args)
+    val client = ClientManager(address = "127.0.0.1", port = 23456)
+
+    client.sendRequest(request)
+    client.receiveResponse()
+    client.disconnect()
 
 }
