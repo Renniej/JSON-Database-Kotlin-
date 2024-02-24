@@ -8,19 +8,6 @@ class JSONDatabase : Database<String> {
     private val database = Array(size = 100) {""}
     override val size = database.size
 
-
-    //sets index in the database to the string sent.  Returns true if the value was added/overwritten sucessfully and false otherwise
-    override fun set(key : Int, value : String) : Boolean {
-        return when(hasKey(key)){
-            true -> {
-                database[key] = value
-                true
-            }
-            false -> false
-        }
-
-    }
-
     //returns true if the key is within the bounds of the Database else returns false
     private fun isInRange(key :  Int) = (key in 0 until size)
 
@@ -33,6 +20,18 @@ class JSONDatabase : Database<String> {
     //returns true if the key is empty or does not exist in the database else false
     override fun isEmptyKey(key : Int) = hasKey(key) && database[key] == EMPTY
 
+
+    //sets index in the database to the string sent.  Returns true if the value was added/overwritten sucessfully and false otherwise
+    override fun set(key : Int, value : String) : Boolean {
+        return when(hasKey(key)){
+            true -> {
+                database[key] = value
+                true
+            }
+            false -> false
+        }
+
+    }
 
     //returns the value stored at the key. if no value exist at that key then it returns null
     override fun get(key : Int) : String? {

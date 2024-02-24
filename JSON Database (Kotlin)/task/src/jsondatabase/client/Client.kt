@@ -5,7 +5,9 @@ import java.io.DataOutputStream
 import java.net.InetAddress
 import java.net.Socket
 
-fun main() {
+fun main(args : Array<String>) {
+
+
 
     println("Client started!")
     val address = "127.0.0.1"
