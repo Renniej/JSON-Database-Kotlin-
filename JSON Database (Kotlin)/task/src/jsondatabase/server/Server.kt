@@ -14,15 +14,9 @@ fun main() {
     val request = server.receiveRequest()
     val response : Response
 
-    println( "REQUEST : $request")
-    response = if (request.cmd == "exit") {
-    Response("OK")
-    }
-    else {
-        server.executeRequest(request)
-
-    }
-
+    response = server.executeRequest(request)
     server.sendResponse(response)
 
+    if (request.cmd == "exit")
+        server.exit()
 }

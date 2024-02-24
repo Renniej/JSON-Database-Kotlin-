@@ -35,7 +35,11 @@ class JSONDatabaseServer(val address : String, val port : Int, database : JSONDa
     }
 
     fun executeRequest(request : Request) : Response {
-       val status = dbManager.executeCommand(request.cmd, request.args)
+       val status = when(request.cmd) {
+           "exit" ->  "OK"
+           else -> dbManager.executeCommand(request.cmd, request.args)
+       }
+
         return Response(message = status)
     }
 
@@ -44,5 +48,9 @@ class JSONDatabaseServer(val address : String, val port : Int, database : JSONDa
         println("Sent: ${response.message}")
     }
 
+    fun exit(){
+        socket.close()
+        server.close()
+    }
 }
 

@@ -3,7 +3,7 @@ package jsondatabase.server
 class DatabaseManager(private val database : Database<String>) {
 
 
-    fun executeCommand(command : String, arguments : String = "") : String {
+    fun executeCommand(command : String, arguments : String = "0") : String {
 
         val args = arguments.split(" ")
         val index = args.first().toInt() -1  //if user enters 1 we want to retrieve index 0 and etc
