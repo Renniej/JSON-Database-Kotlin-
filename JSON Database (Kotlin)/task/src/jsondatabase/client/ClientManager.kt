@@ -32,5 +32,8 @@ class ClientManager(val address: String, val port : Int) {
         return response
     }
 
-    fun disconnect() = output.writeUTF("exit")
+    fun disconnect() {
+        //output.writeUTF("exit")
+        socket.close()
+    }
 }

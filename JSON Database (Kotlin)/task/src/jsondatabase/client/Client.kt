@@ -11,7 +11,12 @@ fun createRequestFromArgs(args : Array<String>): Request {
    return when(cmd) {
         "exit" -> Request.of(cmd)
         "set" -> {
-            val otherData = args.toString().substringAfter("-m ")
+
+
+            val otherData = args.toString().substringAfter("-m ") as Object as String
+
+
+
             Request.of("$cmd $index $otherData")
         }
         else -> Request.of("$cmd $index")
@@ -21,6 +26,8 @@ fun main(args : Array<String>) { //args example : -t set -i 148 -m Here is some 
 
     val request = createRequestFromArgs(args)
     val client = ClientManager(address = "127.0.0.1", port = 23456)
+
+
 
     client.sendRequest(request)
     client.receiveResponse()
