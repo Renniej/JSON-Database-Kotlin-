@@ -13,7 +13,7 @@ fun createRequestFromArgs(args : Array<String>): Request {
         "set" -> {
 
 
-            val otherData = args.toString().substringAfter("-m ") as Object as String
+            val otherData = args.toString().substringAfter("-m ")
 
 
 
@@ -23,6 +23,7 @@ fun createRequestFromArgs(args : Array<String>): Request {
     }
 }
 fun main(args : Array<String>) { //args example : -t set -i 148 -m Here is some text to store on the server
+
 
     val request = createRequestFromArgs(args)
     val client = ClientManager(address = "127.0.0.1", port = 23456)
