@@ -10,6 +10,5 @@ interface Database<T> {
 
     fun delete(key: Int): Boolean
 
-    fun isEmptyKey(key : Int) : Boolean
 
 }
