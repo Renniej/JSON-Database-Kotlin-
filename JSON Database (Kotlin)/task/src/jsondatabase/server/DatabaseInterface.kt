@@ -1,14 +1,14 @@
 package jsondatabase.server
 
-interface Database<T> {
+interface Database<KeyType,ValueType> {
 
     val size: Int
 
-    fun get(key: Int): T?
+    fun get(key: KeyType): ValueType?
 
-    fun set(key: Int, value: T): Boolean
+    fun set(key: KeyType, value: ValueType): Boolean
 
-    fun delete(key: Int): Boolean
+    fun delete(key: KeyType): Boolean
 
 
 }

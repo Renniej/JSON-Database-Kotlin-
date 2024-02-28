@@ -3,40 +3,19 @@ package jsondatabase.server
 
 const val EMPTY = ""
 
-class JSONDatabase (override val size : Int) : Database<String> {
+class JSONDatabase(override val size : Int) : Database<String,String> {
 
-    private val database = Array(size = size) {""}
+    private val database = HashMap<String,String>()
 
-    private fun isKeyInDatabaseBounds(key :  Int) = (key in 0 until size)
-
-    override fun set(key : Int, value : String) : Boolean {
-
-        return try  {
-            database[key] = value
-            true
-        } catch (e : IndexOutOfBoundsException) {
-            false
-        }
-
+    override fun set(key: String, value: String): Boolean {
+        database[key] = value
+        return true
     }
 
-    override fun get(key : Int) : String? {
-        return try {
-            database[key].ifEmpty { null }
-        } catch (e : IndexOutOfBoundsException) {
-            null
-        }
-    }
+    override fun get(key: String) : String? = database[key]
 
+    override fun delete(key: String): Boolean = database.remove(key) != null
 
-    override fun delete(key : Int) : Boolean {
-        return try {
-            database[key] = ""
-            true
-        } catch (e: IndexOutOfBoundsException) {
-            false
-        }
-    }
 
 
 }
