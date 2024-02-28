@@ -1,6 +1,5 @@
 package jsondatabase.server
 
-import jsondatabase.requestResponse.Request
 import jsondatabase.requestResponse.Response
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -22,39 +21,55 @@ class JSONDatabaseServer(val address : String, val port : Int, database : JSONDa
 
     init {
         println("Server started!")
-        openConnection()
+        resetConnection()
     }
 
 
-    private fun openConnection() {
+    fun resetConnection() {
           socket  = server.accept()
           input = DataInputStream(socket.getInputStream())
           output  = DataOutputStream(socket.getOutputStream())
 
     }
 
-    fun closeConnect() = openConnection()
-    fun receiveRequest() : Request {
-        val data = input.readUTF()  //receive message from client.  example : get 1   set 58 Hello World!
-        val request =  Request.of(data)
 
-        println("Received: ${request.cmd} ${request.args}")
+
+
+    fun receiveRequest() : String {
+        val request = input.readUTF()  //receive message from client.  example : get 1   set 58 Hello World!
+
+        println("Received: $request")
 
         return request
     }
 
-    fun executeRequest(request : Request) : Response {
-       val status = when(request.cmd) {
-           "exit" ->  "OK"
-           else -> dbManager.executeCommand(request.cmd, request.args)
-       }
 
-        return Response(message = status)
+
+
+
+
+    fun executeRequest(request : String) : String {
+
+
+        val cmd = request.split(" ")[0]
+        val args = request.substringAfter("$cmd ")
+
+
+
+
+        val response =  when(cmd) {
+            "exit" ->  "OK"
+            else -> dbManager.executeCommand(cmd, args)
+        }
+
+
+
+        return response
     }
 
-    fun sendResponse(response: Response) {
-        output.writeUTF(response.message)
-        println("Sent: ${response.message}")
+    fun sendResponse(response: String) {
+        output.writeUTF(response)
+        println("Sent: $response")
     }
 
 

@@ -1,6 +1,5 @@
 package jsondatabase.client
 
-import jsondatabase.requestResponse.Request
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.InetAddress
@@ -21,10 +20,11 @@ class ClientManager(val address: String, val port : Int) {
     }
 
 
-    fun sendRequest(request : Request) {
-        output.writeUTF(request.toString())
+    fun sendRequest(request : String) {
+        output.writeUTF(request)
         println("Sent: $request")
     }
+
     fun receiveResponse() : String {
         val response = input.readUTF()
         println("Received: $response")

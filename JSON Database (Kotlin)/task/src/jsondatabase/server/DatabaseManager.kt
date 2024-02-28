@@ -9,12 +9,14 @@ class DatabaseManager(private val database : Database<String>) {
         val index = args.first().toInt() -1  //if user enters 1 we want to retrieve index 0 and etc
         val value = args.subList(1, args.size).joinToString(" ")
 
-       return when(command) {
-           "get" ->  database.get(index) ?: "ERROR"
-           "delete" -> if (database.delete(index)) "OK" else "ERROR"
-           "set" -> if (database.set(index, value)) "OK" else "ERROR"
-           else -> "Invalid command"
+        val response = when(command) {
+            "get" ->  database.get(index) ?: "ERROR"
+            "delete" -> if (database.delete(index)) "OK" else "ERROR"
+            "set" -> if (database.set(index, value)) "OK" else "ERROR"
+            else -> "Invalid command"
         }
+
+       return response
 
     }
 
