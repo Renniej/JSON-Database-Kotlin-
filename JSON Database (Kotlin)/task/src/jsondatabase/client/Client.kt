@@ -7,7 +7,7 @@ fun createRequestFromArgs(args : List<String>): String {
     val cmd = args[args.indexOf("-t") + 1]
 
     val index = if (args.contains("-i"))
-        args[args.indexOf("-i") + 1] //grad index data
+        args[args.indexOf("-i") + 1]
     else
         null
 
@@ -21,6 +21,7 @@ fun createRequestFromArgs(args : List<String>): String {
         index?.let { append(" $index") }
         data?.let { append(" $data") }
     }
+
 }
 fun main(args : Array<String>) { //args example : -t set -i 148 -m Here is some text to store on the server
 

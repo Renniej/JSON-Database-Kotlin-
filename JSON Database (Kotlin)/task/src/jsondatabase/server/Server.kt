@@ -12,7 +12,7 @@ fun main() {
 
    while(true) {
 
-       val clientRequest = server.receiveRequest()
+       val clientRequest : String = server.receiveRequest()
        val response : String = server.executeRequest(clientRequest)
 
        server.sendResponse(response)

@@ -1,6 +1,5 @@
 package jsondatabase.server
 
-import jsondatabase.requestResponse.Response
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.InetAddress
