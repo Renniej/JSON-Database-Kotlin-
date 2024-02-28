@@ -1,5 +1,9 @@
 package jsondatabase.server
 
+import jsondatabase.requestResponse.Request
+import jsondatabase.requestResponse.Response
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.InetAddress
@@ -28,37 +32,35 @@ class JSONDatabaseServer(val address : String, val port : Int, database : JSONDa
           socket  = server.accept()
           input = DataInputStream(socket.getInputStream())
           output  = DataOutputStream(socket.getOutputStream())
-
     }
 
 
-
-
-    fun receiveRequest() : String {
+    fun receiveRequest() : Request {
         val request = input.readUTF()  //receive message from client.  example : get 1   set 58 Hello World!
 
         println("Received: $request")
 
-        return request
+        return Json.decodeFromString<Request>(request)
     }
 
+    fun executeRequest(request : Request) : String {
 
+        val response =  if (request.type == "exit"){
+            Response("OK")
+        }else {
 
-
-
-
-    fun executeRequest(request : String) : String {
-
-        val cmd = request.split(" ")[0]
-        val args = request.substringAfter("$cmd ")
-
-
-        val response =  when(cmd) {
-            "exit" ->  "OK"
-            else -> dbManager.executeCommand(cmd, args)
         }
 
 
+
+
+
+
+
+
+
+           dbManager.executeCommand(request.type,request.key,request.value)
+        }
 
         return response
     }

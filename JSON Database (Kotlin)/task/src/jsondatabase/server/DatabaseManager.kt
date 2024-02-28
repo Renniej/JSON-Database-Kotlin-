@@ -2,12 +2,7 @@ package jsondatabase.server
 
 class DatabaseManager(private val database : JSONDatabase ) {
 
-    fun executeCommand(command : String, arguments : String = "") : String {
-
-        val args = arguments.split(" ")
-
-        val key = args.first()
-        val data = args.subList(1, args.size).joinToString(" ")
+    fun executeCommand(command : String, key : String = "", data : String = "") : <Boolean,Value> {
 
         val response = when(command) {
             "get" ->  database.get(key) ?: "ERROR"

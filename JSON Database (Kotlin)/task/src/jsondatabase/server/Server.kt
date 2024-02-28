@@ -1,5 +1,7 @@
 package jsondatabase.server
 
+import jsondatabase.requestResponse.Request
+
 //parses message into list of containing the command and associated data. (Function mainly used to get proper signature for DatabaseManager execute function)
 
 
@@ -12,12 +14,12 @@ fun main() {
 
    while(true) {
 
-       val clientRequest : String = server.receiveRequest()
+       val clientRequest : Request = server.receiveRequest()
        val response : String = server.executeRequest(clientRequest)
 
        server.sendResponse(response)
 
-       if (clientRequest != "exit" )
+       if (clientRequest.type != "exit" )
            server.resetConnection()
        else
            break
