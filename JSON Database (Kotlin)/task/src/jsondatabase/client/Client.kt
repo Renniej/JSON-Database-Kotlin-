@@ -28,7 +28,7 @@ fun main(args : Array<String>) { //args example : -t set -i 148 -m Here is some 
 
     val request : String = createRequestFromArgs(args.toList())
 
-    val client = ClientManager(address = "127.0.0.1", port = 23456)
+    val client = ClientConnection(address = "127.0.0.1", port = 23456)
 
 
     client.sendRequest(request)

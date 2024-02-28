@@ -5,7 +5,7 @@ import java.io.DataOutputStream
 import java.net.InetAddress
 import java.net.Socket
 
-class ClientManager(val address: String, val port : Int) {
+class ClientConnection(val address: String, val port : Int) {
 
     private val socket : Socket
     private val input : DataInputStream

@@ -49,11 +49,8 @@ class JSONDatabaseServer(val address : String, val port : Int, database : JSONDa
 
     fun executeRequest(request : String) : String {
 
-
         val cmd = request.split(" ")[0]
         val args = request.substringAfter("$cmd ")
-
-
 
 
         val response =  when(cmd) {
