@@ -1,9 +1,11 @@
 package jsondatabase.server
 
 import jsondatabase.requestResponse.Request
-import jsondatabase.requestResponse.Response
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.InetAddress
@@ -43,26 +45,24 @@ class JSONDatabaseServer(val address : String, val port : Int, database : JSONDa
         return Json.decodeFromString<Request>(request)
     }
 
-    fun executeRequest(request : Request) : String {
+    fun executeRequest(request : Request) : JsonObject {
 
-        val response =  if (request.type == "exit"){
-            Response("OK")
-        }else {
+        val value = dbManager.executeCommand(request.type,request.key,request.value)
+
+        return buildJsonObject {
+
+            if (value == null) {
+                put("response", "ERROR")
+                put("reason", "No such key")
+            } else {
+                put("response", "OK")
+
+                if (request.type == "get")
+                    put("value", value)
+            }
 
         }
 
-
-
-
-
-
-
-
-
-           dbManager.executeCommand(request.type,request.key,request.value)
-        }
-
-        return response
     }
 
     fun sendResponse(response: String) {

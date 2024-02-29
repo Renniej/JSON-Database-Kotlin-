@@ -10,18 +10,14 @@ class JSONDatabase(override val size : Int) : Database<String,String> {
 
     private val database = HashMap<String,String>()
 
-    override fun set(key: String, value: String): Boolean {
-
-
-
-
+    override fun set(key: String, value: String): String? {
         database[key] = value
-        return true
+        return database[key]
     }
 
     override fun get(key: String) : String? = database[key]
 
-    override fun delete(key: String): Boolean = database.remove(key) != null
+    override fun delete(key: String): String? = database.remove(key)
 
 
 

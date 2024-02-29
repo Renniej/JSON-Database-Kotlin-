@@ -2,12 +2,12 @@ package jsondatabase.server
 
 class DatabaseManager(private val database : JSONDatabase ) {
 
-    fun executeCommand(command : String, key : String = "", data : String = "") : <Boolean,Value> {
+    fun executeCommand(command : String, key : String = "", data : String = "") : String? {
 
         val response = when(command) {
-            "get" ->  database.get(key) ?: "ERROR"
-            "delete" -> if (database.delete(key)) "OK" else "ERROR"
-            "set" -> if (database.set(key, data)) "OK" else "ERROR"
+            "get" ->  database.get(key)
+            "delete" -> database.delete(key)
+            "set" -> database.set(key, data)
             else -> "Invalid command"
         }
 

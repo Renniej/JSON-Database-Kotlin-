@@ -6,9 +6,9 @@ interface Database<KeyType,ValueType> {
 
     fun get(key: KeyType): ValueType?
 
-    fun set(key: KeyType, value: ValueType): Boolean
+    fun set(key: KeyType, value: ValueType): String?
 
-    fun delete(key: KeyType): Boolean
+    fun delete(key: KeyType): String?
 
 
 }

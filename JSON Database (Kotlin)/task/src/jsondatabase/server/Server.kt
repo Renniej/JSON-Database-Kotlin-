@@ -1,6 +1,7 @@
 package jsondatabase.server
 
 import jsondatabase.requestResponse.Request
+import kotlinx.serialization.json.JsonObject
 
 //parses message into list of containing the command and associated data. (Function mainly used to get proper signature for DatabaseManager execute function)
 
@@ -15,9 +16,9 @@ fun main() {
    while(true) {
 
        val clientRequest : Request = server.receiveRequest()
-       val response : String = server.executeRequest(clientRequest)
+       val response : JsonObject = server.executeRequest(clientRequest)
 
-       server.sendResponse(response)
+       server.sendResponse(response.toString())
 
        if (clientRequest.type != "exit" )
            server.resetConnection()
