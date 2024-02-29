@@ -45,25 +45,7 @@ class JSONDatabaseServer(val address : String, val port : Int, database : JSONDa
         return Json.decodeFromString<Request>(request)
     }
 
-    fun executeRequest(request : Request) : JsonObject {
-
-        val value = dbManager.executeCommand(request.type,request.key,request.value)
-
-        return buildJsonObject {
-
-            if (value == null) {
-                put("response", "ERROR")
-                put("reason", "No such key")
-            } else {
-                put("response", "OK")
-
-                if (request.type == "get")
-                    put("value", value)
-            }
-
-        }
-
-    }
+    fun executeRequest(request : Request) : String? = if (request.type == "exit") "OK" else dbManager.executeCommand(request.type,request.key,request.value)
 
     fun sendResponse(response: String) {
         output.writeUTF(response)
