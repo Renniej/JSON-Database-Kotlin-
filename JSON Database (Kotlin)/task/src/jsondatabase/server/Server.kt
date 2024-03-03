@@ -1,61 +1,54 @@
 package jsondatabase.server
 
 import jsondatabase.requestResponse.Request
-import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
+import java.net.InetAddress
+import java.net.ServerSocket
+import java.util.concurrent.Callable
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
+import java.util.concurrent.Future
 
 //parses message into list of containing the command and associated data. (Function mainly used to get proper signature for DatabaseManager execute function)
 
-
-
+const val NUM_OF_THREADS = 4
+const val ADDRESS = "127.0.0.1"
+const val PORT = 23456
 fun main() {
 
-    val db = JSONDatabase(1000)
-    val server = JSONDatabaseServer(address = "127.0.0.1", port = 23456,  database = db)
+
+    val threadManager = Executors.newFixedThreadPool(NUM_OF_THREADS)
+    val dbManager = DatabaseManager(JSONDatabase())
+    val serverSocket = ServerSocket(PORT, 50, InetAddress.getByName(ADDRESS))
+    println("Server started!")
+
+    var shutdownServer = false;
 
 
-   while(true) {
+    while(!shutdownServer) {
 
-       val clientRequest : Request = server.receiveRequest()
-       val dbValue : String? = server.executeRequest(clientRequest) //returns null if request fails
+        val client = serverSocket.accept()
+        val requestTask = ProcessRequest(client,dbManager)
 
-       val response = buildJsonObject {
+        val exitServer : Future<Boolean> = threadManager.submit(requestTask)
 
-           when (dbValue) {
-
-               null -> {
-                   put("response", "ERROR")
-                   put("reason", "No such key")
-               }
-
-               INVALID_CMD -> {
-                   put("response", "ERROR")
-                   put("reason", "Invalid Command")
-               }
-
-               else -> {
-                   put("response", "OK")
-                   if (clientRequest.type == "get")
-                       put("value", dbValue)
-               }
-
-           }
-
-       }
+        threadManager.execute {
+            if (exitServer.get() == true) {
+                threadManager.shutdown()
+                shutdownServer = true
+            }
+        }
 
 
-       server.sendResponse(response.toString())
-
-       if (clientRequest.type != "exit" )
-           server.resetConnection()
-       else
-           break
+    }
 
 
-   }
 
 
-    server.exit()
+
+
+
+
 
 }
