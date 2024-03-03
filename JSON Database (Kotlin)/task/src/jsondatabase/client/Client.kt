@@ -7,10 +7,16 @@ import kotlinx.serialization.json.Json
 import java.io.File
 
 
-val REQUEST_FOLDER = "${File.separator}client${File.separator}data"
+private val clientDataPath = System.getProperty("user.dir") + File.separator +
+        "src" + File.separator +
+        "jsondatabase" + File.separator +
+        "client" + File.separator +
+        "data"
+
+
 fun createRequestFromFile(fileName : String) : Request {
 
-    val file = File("$REQUEST_FOLDER${File.separator}$fileName")
+    val file = File("$clientDataPath${File.separator}$fileName")
 
     if (!file.exists()) {
         throw Error("$fileName does not exist")
