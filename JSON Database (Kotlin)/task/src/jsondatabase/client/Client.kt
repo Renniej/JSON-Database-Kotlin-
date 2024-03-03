@@ -1,16 +1,36 @@
 package jsondatabase.client
 
 import jsondatabase.requestResponse.Request
+import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import java.io.File
 
 
+val REQUEST_FOLDER = "${File.separator}client${File.separator}data"
+fun createRequestFromFile(fileName : String) : Request {
+
+    val file = File("$REQUEST_FOLDER${File.separator}$fileName")
+
+    if (!file.exists()) {
+        throw Error("$fileName does not exist")
+    } else {
+        return Json.decodeFromString<Request>(file.readText())
+    }
+
+}
 
 fun createRequestFromArgs(args : List<String>): Request {
+
+
+
 
     val cmdIndex = args.indexOf("-t")
     val keyIndex = args.indexOf("-k")
     val valueIndex = args.indexOf("-v")
+
+
+
 
     val cmd = args[cmdIndex +1]
     val key = args[keyIndex +1]
@@ -24,10 +44,17 @@ fun createRequestFromArgs(args : List<String>): Request {
 
 
 }
-fun main(args : Array<String>) { //args example : -t set -i 148 -m Here is some text to store on the server
+fun main(arguments : Array<String>) { //args example : -t set -i 148 -m Here is some text to store on the server
+
+    val args = arguments.toList()
+
+    val request : Request = if (args.contains("-in"))
+        createRequestFromFile(args[args.indexOf("-in") + 1])
+    else
+        createRequestFromArgs(args)
 
 
-    val request : Request = createRequestFromArgs(args.toList())
+
 
     val client = ClientConnection(address = "127.0.0.1", port = 23456)
 

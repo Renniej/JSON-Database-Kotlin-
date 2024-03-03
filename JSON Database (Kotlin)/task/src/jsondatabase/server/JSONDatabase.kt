@@ -9,8 +9,6 @@ const val EMPTY = ""
 
 class JSONDatabase() : Database<String,String> {
 
-
-
     private val database = HashMap<String,String>()
     override val size: Int
         get() = database.size
