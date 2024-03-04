@@ -8,13 +8,10 @@ import java.io.File
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 
-const val EMPTY = ""
-
-
-class JSONDatabase(private val jsonFile : File) : Database<String,String> {
+class JSONDatabase(private val jsonFile : File)  {
 
     private val database = Json.decodeFromString<MutableMap<String,String>>(jsonFile.readText())
-    override val size: Int
+     val size: Int
         get() {
           return  database.size
         }
@@ -23,14 +20,13 @@ class JSONDatabase(private val jsonFile : File) : Database<String,String> {
     private val readLock = fileAccessLock.readLock()
     private val writeLock = fileAccessLock.writeLock()
 
-
     private fun updateFile() {
         writeLock.lock()
             jsonFile.writeText(Json.encodeToString(database))
         writeLock.unlock()
     }
 
-    @Synchronized override fun set(key: String, value: String): String? {
+    @Synchronized fun set(key: String, value: String): String? {
 
         if (key.isBlank()) return null
 
@@ -42,7 +38,7 @@ class JSONDatabase(private val jsonFile : File) : Database<String,String> {
 
     }
 
-    @Synchronized override fun get(key: String) : String? {
+    @Synchronized fun get(key: String) : String? {
 
         readLock.lock()
 
@@ -55,7 +51,7 @@ class JSONDatabase(private val jsonFile : File) : Database<String,String> {
 
     }
 
-    @Synchronized override fun delete(key: String): String? {
+    @Synchronized fun delete(key: String): String? {
 
         val value= database.remove(key)
         updateFile()
