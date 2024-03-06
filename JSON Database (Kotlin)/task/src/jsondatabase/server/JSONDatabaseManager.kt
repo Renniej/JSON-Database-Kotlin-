@@ -10,19 +10,14 @@ import java.util.LinkedList
 const val INVALID_CMD = "Invalid command"
 class DatabaseManager(private val database : JSONDatabase ) {
 
-    fun executeCommand(command : String, key : String = "", data : String = "") : ServerResponse {
+    fun executeCommand(command : String, key : JsonElement?, value : JsonElement?) : ServerResponse {
 
-
-        val keyJson = Json.encodeToJsonElement(key)
-
-
-
-        val keyQueue = if (keyJson as? JsonPrimitive != null) {
+        val keyQueue = if (key as? JsonPrimitive != null) {
             LinkedList<String>().apply {
-               add(keyJson.toString())
+               add(key.toString())
            }
         } else {
-            val list = (keyJson as JsonArray).toList().map {it.toString()}
+            val list = (key as JsonArray).toList().map {it.toString()}
             LinkedList(list)
         }
 
@@ -32,11 +27,27 @@ class DatabaseManager(private val database : JSONDatabase ) {
         val response = when(command) {
 
             "delete" -> if (database.delete(keyQueue)) ServerResponse.OK else ServerResponse.ERROR
-            "set" -> if (database.set(keyQueue, data)) ServerResponse.OK else ServerResponse.ERROR
+
+            "set" ->  {
+
+                if (value == null) {
+                    ServerResponse("ERROR", Json.encodeToJsonElement("No value was sent with set request"))
+                }
+                else {
+                    if (database.set(keyQueue, value))
+                        ServerResponse.OK
+                    else
+                        ServerResponse.ERROR
+                }
+
+
+            }
+
+
             "get" -> {
-                when(val value = database.get(keyQueue)){
+                when(val data = database.get(keyQueue)){
                     null -> ServerResponse.ERROR
-                    else -> ServerResponse("OK", value = value)
+                    else -> ServerResponse("OK", value = data)
                 }
             }
 

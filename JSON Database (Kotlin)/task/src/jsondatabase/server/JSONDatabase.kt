@@ -23,12 +23,12 @@ class JSONDatabase(private val jsonFile : File) {
 
 
     @Synchronized
-    fun set(keys : Queue<String> , value: String) : Boolean {
+    fun set(keys : Queue<String> , value: JsonElement) : Boolean {
 
         val firstKey = keys.first()
-        val jsonValue = Json.encodeToJsonElement(value)
+
+        database = modifyJsonTree(keys,database,value)
         updateFile()
-        database = modifyJsonTree(keys,database,jsonValue)
 
         return true
     }

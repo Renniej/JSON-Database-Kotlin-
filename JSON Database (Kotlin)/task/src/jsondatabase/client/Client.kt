@@ -1,9 +1,13 @@
 package jsondatabase.client
 
+
 import jsondatabase.requestResponse.Request
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.encodeToJsonElement
 import java.io.File
 
 
@@ -28,19 +32,14 @@ fun createRequestFromFile(fileName : String) : Request {
 
 fun createRequestFromArgs(args : List<String>): Request {
 
-
-
-
     val cmdIndex = args.indexOf("-t")
     val keyIndex = args.indexOf("-k")
     val valueIndex = args.indexOf("-v")
 
 
-
-
     val cmd = args[cmdIndex +1]
-    val key = args[keyIndex +1]
-    val value = args[valueIndex+1]
+    val key = Json.encodeToJsonElement(args[keyIndex +1])
+    val value = Json.encodeToJsonElement(args[valueIndex+1])
 
     return when {  //It is returned this way so that when the request gets serialized parameters that weren't used aren't included in the JSON. Exampple : {"type":"get","key":"1"}  vs {"type":"get","key":"1", value:""}
         valueIndex != -1 -> Request(cmd,key,value)
