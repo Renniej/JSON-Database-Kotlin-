@@ -1,6 +1,7 @@
 package jsondatabase.server
 
 import jsondatabase.requestResponse.Request
+import jsondatabase.requestResponse.ServerResponse
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -20,8 +21,14 @@ class ProcessRequest(private val socket : Socket, private val dbManager : Databa
 
     override fun call(): Boolean {
         val request = receiveRequest()
-        val dbValue : String? = executeRequest(request)
-        val response : JsonObject = buildJsonResponse(dbValue, request.type)
+
+        val response = if (request.type == "exit") {
+            ServerResponse.OK
+        }
+        else {
+            dbManager.executeCommand(request.type,request.key,request.value)
+        }
+
 
         sendResponse(response)
 
@@ -35,7 +42,6 @@ class ProcessRequest(private val socket : Socket, private val dbManager : Databa
         return Json.decodeFromString<Request>(request)
     }
 
-    private fun executeRequest(request : Request) : String? = if (request.type == "exit") "OK" else dbManager.executeCommand(request.type,request.key,request.value)
     private fun buildJsonResponse(dbValue : String?, requestType : String) : JsonObject {
 
         return buildJsonObject {
@@ -63,7 +69,7 @@ class ProcessRequest(private val socket : Socket, private val dbManager : Databa
 
 
 
-    private fun sendResponse(response: JsonObject) {
+    private fun sendResponse(response: ServerResponse) {
         output.writeUTF(response.toString())
         println("Sent: $response")
     }

@@ -38,10 +38,6 @@ fun main() {
 
 
 
-
-
-
-
     val dbManager = DatabaseManager(JSONDatabase(jsonDb))
     val serverSocket = ServerSocket(PORT, 50, InetAddress.getByName(ADDRESS))
     var shutdownServer = false;

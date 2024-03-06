@@ -20,6 +20,37 @@ class JSONDatabase(private val jsonFile : File) {
     private val fileAccessLock = ReentrantReadWriteLock()
     private val readLock = fileAccessLock.readLock()
     private val writeLock = fileAccessLock.writeLock()
+
+
+    @Synchronized
+    fun set(keys : Queue<String> , value: String) : Boolean {
+
+        val firstKey = keys.first()
+        val jsonValue = Json.encodeToJsonElement(value)
+        updateFile()
+        database = modifyJsonTree(keys,database,jsonValue)
+
+        return true
+    }
+    @Synchronized
+    fun get(keys : Queue<String>) : JsonElement? {
+
+
+        val jsonElement = database[keys.remove()]
+
+        return iterateDownJSONObject(keys,jsonElement)
+    }
+
+    @Synchronized
+    fun delete (keys: Queue<String>) : Boolean {
+        //Json.encode here is unnecessary but im tired of working on this stage ): <
+        database = modifyJsonTree(keys,database,  Json.encodeToJsonElement(""), shouldDelete = true)
+        updateFile()
+        return true
+    }
+
+
+
     @Synchronized
     private fun updateFile() {
         writeLock.lock()
@@ -41,6 +72,7 @@ class JSONDatabase(private val jsonFile : File) {
         }
 
     }
+
 
     @Synchronized
     //will also add the folder/node if it doesn't exist. //if value is = null we delete the entry
@@ -85,32 +117,6 @@ class JSONDatabase(private val jsonFile : File) {
 
 
 
-    }
-
-    @Synchronized
-    fun set(keys : Queue<String> , value: String) : JsonElement? {
-
-        val firstKey = keys.first()
-        val jsonValue = Json.encodeToJsonElement(value)
-
-        database = modifyJsonTree(keys,database,jsonValue)
-
-        return database[firstKey]
-    }
-    @Synchronized
-    fun get(keys : Queue<String>) : JsonElement? {
-
-
-        val jsonElement = database[keys.remove()]
-
-        return iterateDownJSONObject(keys,jsonElement)
-    }
-
-    @Synchronized
-    fun delete (keys: Queue<String>) : Boolean {
-        //Json.encode here is unnecessary but im tired of working on this stage ): <
-        database = modifyJsonTree(keys,database,  Json.encodeToJsonElement(""), shouldDelete = true)
-        return true
     }
 
 }
