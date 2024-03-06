@@ -14,10 +14,10 @@ class DatabaseManager(private val database : JSONDatabase ) {
 
         val keyQueue = if (key as? JsonPrimitive != null) {
             LinkedList<String>().apply {
-               add(key.toString())
+               add(key.jsonPrimitive.content)
            }
         } else {
-            val list = (key as JsonArray).toList().map {it.toString()}
+            val list = (key as JsonArray).toList().map {it.jsonPrimitive.content}
             LinkedList(list)
         }
 

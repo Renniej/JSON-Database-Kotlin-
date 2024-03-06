@@ -25,7 +25,6 @@ class JSONDatabase(private val jsonFile : File) {
     @Synchronized
     fun set(keys : Queue<String> , value: JsonElement) : Boolean {
 
-        val firstKey = keys.first()
 
         database = modifyJsonTree(keys,database,value)
         updateFile()
@@ -34,6 +33,8 @@ class JSONDatabase(private val jsonFile : File) {
     }
     @Synchronized
     fun get(keys : Queue<String>) : JsonElement? {
+
+
 
 
         val jsonElement = database[keys.remove()]
@@ -64,7 +65,7 @@ class JSONDatabase(private val jsonFile : File) {
         if (keyQueue.isEmpty()) return curElement //base case 2
 
         return if (curElement is JsonObject) {
-            val next = curElement[keyQueue.remove()]
+            val next = curElement.toMap()[keyQueue.remove()]
             iterateDownJSONObject(keyQueue,next)
         }
         else { // We can only iterate down a JSONObject. if it isn't a JSON Object and there are still keys to look for then we can assume the key doesn't exist :)
@@ -86,6 +87,9 @@ class JSONDatabase(private val jsonFile : File) {
                 if (shouldDelete) {
                     curMap.remove(key)
                 } else { //add value
+
+
+
                     curMap[key] = value
                 }
 
@@ -121,106 +125,5 @@ class JSONDatabase(private val jsonFile : File) {
 
 }
 
-
-
-/*
-class JSONDatabase(private val jsonFile : File)  {
-
-    private val database = Json.decodeFromString<MutableMap<String,Any>>(jsonFile.readText())
-     val size: Int
-        get() {
-          return  database.size
-        }
-
-    private val fileAccessLock = ReentrantReadWriteLock()
-    private val readLock = fileAccessLock.readLock()
-    private val writeLock = fileAccessLock.writeLock()
-
-    private fun updateFile() {
-        writeLock.lock()
-            jsonFile.writeText(Json.encodeToString(database))
-        writeLock.unlock()
-    }
-
-    fun updateEntry(keys : List<String>, json : JsonObject? = null) {
-
-        var entry : JsonObject
-
-        if (json == null) {
-
-
-
-            entry = database[keys.first()]!!
-        }
-
-
-
-
-
-
-
-
-    }
-
-
-
-    @Synchronized fun set(keys: List<String>, value: String): JsonObject? {
-
-        var entry : JsonObject?
-
-        if (keys.isEmpty())
-            entry = null
-        else if (keys.size == 1) {
-            database[keys.first()] = value
-            entry = database[keys.first()]
-        }
-        else {
-
-            val newData = value.toMutableMap()
-
-            if (!database.containsKey(keys.first())) {
-                database[keys.first()] = buildJsonObject { }
-            }
-
-
-            val oldData = database[keys.first()]!!.toMutableMap()
-
-
-
-
-        }
-
-
-        updateFile()
-
-        return entry
-
-    }
-
-    @Synchronized fun get(key: List<String>) : String? {
-
-        readLock.lock()
-
-        val value = database[key]
-
-        readLock.unlock()
-
-        return value
-
-
-    }
-
-    @Synchronized fun delete(key: List<String>): String? {
-
-        val value= database.remove(key)
-        updateFile()
-
-        return value
-    }
-
-
-
-}
-*/
 
 

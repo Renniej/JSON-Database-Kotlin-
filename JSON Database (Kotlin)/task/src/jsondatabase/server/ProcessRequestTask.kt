@@ -75,7 +75,7 @@ class ProcessRequest(private val socket : Socket, private val dbManager : Databa
         val jsonResponse = Json.encodeToJsonElement(response)
 
         output.writeUTF(jsonResponse.toString())
-        println("Sent: $response")
+        println("Sent: $jsonResponse")
     }
 
 
