@@ -3,10 +3,7 @@ package jsondatabase.server
 import jsondatabase.requestResponse.Request
 import jsondatabase.requestResponse.ServerResponse
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
+import kotlinx.serialization.json.*
 import java.io.DataInputStream
 import java.io.DataOutputStream
 import java.net.Socket
@@ -70,7 +67,9 @@ class ProcessRequest(private val socket : Socket, private val dbManager : Databa
 
 
     private fun sendResponse(response: ServerResponse) {
-        output.writeUTF(response.toString())
+        val jsonResponse = Json.encodeToJsonElement(response)
+
+        output.writeUTF(jsonResponse.toString())
         println("Sent: $response")
     }
 

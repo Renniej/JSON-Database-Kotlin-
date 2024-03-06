@@ -2,8 +2,7 @@ package jsondatabase.server
 
 import jsondatabase.requestResponse.ServerResponse
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.encodeToJsonElement
+import kotlinx.serialization.json.*
 
 import java.util.LinkedList
 
@@ -13,7 +12,21 @@ class DatabaseManager(private val database : JSONDatabase ) {
 
     fun executeCommand(command : String, key : String = "", data : String = "") : ServerResponse {
 
-        val keyQueue = Json.decodeFromString<LinkedList<String>>(key)
+
+        val keyJson = Json.encodeToJsonElement(key)
+
+
+
+        val keyQueue = if (keyJson as? JsonPrimitive != null) {
+            LinkedList<String>().apply {
+               add(keyJson.toString())
+           }
+        } else {
+            val list = (keyJson as JsonArray).toList().map {it.toString()}
+            LinkedList(list)
+        }
+
+
 
 
         val response = when(command) {

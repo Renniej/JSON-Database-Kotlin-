@@ -27,6 +27,8 @@ class ClientConnection(val address: String, val port : Int) {
 
     fun receiveResponse() : String {
         val response = input.readUTF()
+
+
         println("Received: $response")
 
         return response
